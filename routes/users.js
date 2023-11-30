@@ -1,4 +1,10 @@
 const mongoose = require('mongoose');
+const plm = require('passport-local-mongoose');
+
+mongoose.connect('mongodb://127.0.0.1:27017/pinterestclone', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -10,26 +16,24 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  posts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Post', // Assuming you have a Post model defined separately
-    }
-  ],
+  posts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+  }],
   dp: {
-    type: String, // Assuming dp is a URL or file path to the display picture
+    type: String,
   },
   email: {
     type: String,
     required: true,
     unique: true,
   },
-  fullName: {
+  fullname: {
     type: String,
     required: true,
   },
 });
 
-const User = mongoose.model('User', userSchema);
+userSchema.plugin(plm);
 
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);
